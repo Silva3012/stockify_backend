@@ -5,6 +5,8 @@ const mongoose = require('mongoose'); // Importing Mongoose
 const logger = require('morgan'); // To log on the termoinal
 const passport = require('passport') // Importing passport
 const userRoutes = require('./routes/userRoutes');
+const stockRoutes = require('./routes/stockRoutes');
+
 
 let PORT = 3000 || process.env.PORT 
 
@@ -26,7 +28,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api/users', userRoutes);
+app.use('/api/users', userRoutes); // User routes
+app.use('/api/stocks', stockRoutes); // Stock routes
 
 // Connect to the DB with mongoose
 mongoose
