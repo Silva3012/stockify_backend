@@ -1,5 +1,4 @@
 const mongoose = require('mongoose'); // Importing the Mongoose library
-const passportLocalMongoose = require('passport-local-mongoose');
 const findOrCreate = require('mongoose-findorcreate');
 const { Schema } = mongoose; // Destructuring to extract the schema object
 
@@ -11,8 +10,7 @@ const userSchema = new Schema({
   facebookId: { type: String },
 });
 
-// Apply passport-local-mongoose plugin
-userSchema.plugin(passportLocalMongoose, { usernameField: 'email' });
+// // Apply findOrCreate
 userSchema.plugin(findOrCreate);
 
 // Creating a Mongoose model for the User schema

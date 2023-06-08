@@ -1,6 +1,8 @@
 const express = require('express');
-const stockSearchMiddleware = require('../middlewares/stockSearchMiddleware');
 const router = express.Router();
+const stockSearchMiddleware = require('../middlewares/stockSearchMiddleware');
+const { getWatchlistStocks, addToWatchlist, removeFromWatchlist } = require('../controllers/watchlistController');
+const { verifyToken, checkLoggedIn } = require('../middlewares/auth');
 
 // Route for stock search
 router.get('/search', stockSearchMiddleware, (req, res) => {
@@ -8,12 +10,14 @@ router.get('/search', stockSearchMiddleware, (req, res) => {
     res.json({ results: stockResults });
 });
 
+// Get user's watchlist
+router.get('/watchlist', verifyToken, checkLoggedIn, getWatchlistStocks);
+
+// Add a stock to the watchlist
+router.post('/watchlist/add', verifyToken, checkLoggedIn, addToWatchlist);
+
+// Remove a stock from the watchlist
+router.delete('/watchlist/remove/:ticker', verifyToken, checkLoggedIn, removeFromWatchlist);
+
 module.exports = router;
 
-/*
-
- Here we are creating a GET route for /search that utilizes the stockSearchMiddleware as middleware. 
- When this route is accessed, the middleware will be called first to fetch the stock data and store it in the stockResults property of the request object. 
- Then, in the route handler function, we can access the stock data from the request object and send it as a response.
-
-*/

@@ -12,8 +12,8 @@ router.post('/login', userController.loginUser);
 router.get('/logout', userController.logoutUser);
 
 // Facebook authentication routes
-// router.get('/auth/facebook', userController.facebookAuth);
-// router.get('/auth/facebook/stockify', userController.facebookAuthCallback);
+router.get('/auth/facebook', userController.facebookAuth);
+router.get('/auth/facebook/stockify', userController.facebookAuthCallback);
 
 // Google authentication routes
 router.get('/auth/google', userController.googleAuth);

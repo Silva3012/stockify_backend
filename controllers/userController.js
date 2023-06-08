@@ -1,9 +1,11 @@
 const bcrypt = require('bcrypt');
-const passport = require('../passport');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const passport = require('../middlewares/authPassportMiddleware');
+require('dotenv').config();
 
 // User registration
-exports.registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   console.log(req.body);
@@ -20,70 +22,82 @@ exports.registerUser = async (req, res) => {
       username: email, // Use email as the username
       name,
       email,
+      password,
     });
 
-    // Register the user with passport-local-mongoose
-    await User.register(newUser, password);
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    newUser.password = hashedPassword;
 
-    // Return a success response
-    return res.status(201).json({ message: 'User registered successfully' });
+    // Save the user to the database
+    await newUser.save();
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Return a success response with the token
+    return res.status(201).json({ message: 'User registered successfully', token });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'An error occurred while registering user' });
   }
 };
 
-// User login
-exports.loginUser = (req, res, next) => {
-  const { email, password } = req.body; // Destructure email and password from req.body
+// User login 
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
 
   console.log('Login request - Email:', email, 'Password:', password);
 
-  passport.authenticate('local', (err, user) => {
-    console.log('Authentication result - Error:', err, 'User:', user);
-
-    if (err) {
-      console.log('Error authenticating user:', err);
-      return res.status(500).json({ message: 'Error authenticating user', error: err });
-    }
+  try {
+    // Check if the user exists
+    const user = await User.findOne({ email });
     if (!user) {
-      console.log('Invalid email or password');
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Log in the user
-    req.logIn(user, (err) => {
-      if (err) {
-        console.log('Error logging in user:', err);
-        return res.status(500).json({ message: 'Error logging in user', error: err });
-      }
-      console.log('User logged in successfully');
-      return res.status(200).json({ message: 'User logged in successfully' });
-    });
-  })(req, res, next);
+    // Generate JWT token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Return a success response with the token
+    return res.status(200).json({ message: 'User logged in successfully', token });
+  } catch (error) {
+    console.log('Error authentication user:', error);
+    return res.status(500).json({ message: 'Error authenticating user', error });
+  }
 };
 
-
 // User logout
-exports.logoutUser = (req, res) => {
-//   req.logout();
+const logoutUser = (req, res) => {
+  // Handle logout logic here
   res.status(200).json({ message: 'User logged out successfully' });
 };
 
-// // Facebook authentication
-// exports.facebookAuth = passport.authenticate('facebook');
+// Facebook authentication
+const facebookAuth = passport.authenticate('facebook');
 
-// // Facebook authentication callback
-// exports.facebookAuthCallback = passport.authenticate('facebook', {
-//   successRedirect: '/dashboard',
-//   failureRedirect: '/login',
-// });
+// Facebook authentication callback
+const facebookAuthCallback = passport.authenticate('facebook', {
+  successRedirect: '/dashboard',
+  failureRedirect: 'login', 
+});
 
-// Google authentication
-exports.googleAuth = passport.authenticate('google', { scope: ['profile', 'email'] });
+// Google authentication 
+const googleAuth = passport.authenticate('google', { scope: ['profile', 'email'] });
 
 // Google authentication callback
-exports.googleAuthCallback = passport.authenticate('google', {
+const googleAuthCallback = passport.authenticate('google', {
   successRedirect: '/dashboard',
-  failureRedirect: '/login',
+  failureRedirect: 'login',
 });
+
+module.exports = {
+  registerUser,
+  loginUser,
+  logoutUser,
+  facebookAuth,
+  facebookAuthCallback,
+  googleAuth,
+  googleAuthCallback,
+};

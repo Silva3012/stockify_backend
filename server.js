@@ -19,7 +19,7 @@ app.use(session({
   saveUninitialized: false
 }));
 
-// Initialize Passport.js middleware
+// Initialize Passport.js middleware 
 app.use(passport.initialize());
 app.use(passport.session());
 
