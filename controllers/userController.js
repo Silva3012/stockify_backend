@@ -34,7 +34,7 @@ const registerUser = async (req, res) => {
     await newUser.save();
 
     // Generate JWT token
-    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
     // Return a success response with the token
     return res.status(201).json({ message: 'User registered successfully', token });
@@ -58,7 +58,7 @@ const loginUser = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
     // Return a success response with the token
     return res.status(200).json({ message: 'User logged in successfully', token });
@@ -67,6 +67,35 @@ const loginUser = async (req, res) => {
     return res.status(500).json({ message: 'Error authenticating user', error });
   }
 };
+
+// Controller to get username
+const getUsername = async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1]; 
+
+  try {
+    // Verify and decode the token to retrieve the user ID
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decodedToken.userId;
+
+    // Find the user by ID in the database
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Extract the _id and name fields from the user document
+    const { _id, name } = user;
+
+    // Return the _id and name in the response
+    return res.status(200).json({ _id, name });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'An error occurred while retrieving the username' });
+  }
+};
+
+
 
 // User logout
 const logoutUser = (req, res) => {
@@ -79,7 +108,7 @@ const facebookAuth = passport.authenticate('facebook');
 
 // Facebook authentication callback
 const facebookAuthCallback = passport.authenticate('facebook', {
-  successRedirect: '/dashboard',
+  successRedirect: 'http://localhost:3000/dashboard',
   failureRedirect: 'login', 
 });
 
@@ -88,7 +117,7 @@ const googleAuth = passport.authenticate('google', { scope: ['profile', 'email']
 
 // Google authentication callback
 const googleAuthCallback = passport.authenticate('google', {
-  successRedirect: '/dashboard',
+  successRedirect: 'http://localhost:3000/dashboard',
   failureRedirect: 'login',
 });
 
@@ -96,6 +125,7 @@ module.exports = {
   registerUser,
   loginUser,
   logoutUser,
+  getUsername,
   facebookAuth,
   facebookAuthCallback,
   googleAuth,

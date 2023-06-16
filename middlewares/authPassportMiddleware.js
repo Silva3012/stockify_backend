@@ -29,7 +29,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: 'http://localhost:3000/api/users/auth/facebook/stockify',
+      callbackURL: 'http://localhost:3001/api/users/auth/facebook/stockify',
       profileFields: ['id', 'displayName', 'email'],
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -65,7 +65,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:3000/api/users/auth/google/stockify',
+      callbackURL: 'http://localhost:3001/api/users/auth/google/stockify',
     },
     async (accessToken, refreshToken, profile, done) => {
       try {

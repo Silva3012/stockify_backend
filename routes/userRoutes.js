@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router(); // Importing express router to define routes
 const userController = require('../controllers/userController');
 
+// get username router
+router.get('/username', userController.getUsername);
+
 // User registration
 router.post('/register', userController.registerUser);
 

@@ -3,14 +3,20 @@ const express = require('express'); // Importing the express module
 const session = require('express-session'); // Importing express session middleware
 const mongoose = require('mongoose'); // Importing Mongoose
 const logger = require('morgan'); // To log on the termoinal
+const cors = require('cors'); // Import the cors package
 const passport = require('passport') // Importing passport
 const userRoutes = require('./routes/userRoutes');
 const stockRoutes = require('./routes/stockRoutes');
 
 
-let PORT = 3000 || process.env.PORT 
+let PORT = 3001 || process.env.PORT 
 
 const app = express() // Instance of express
+
+// Enable CORS for all routes
+app.use(cors({
+  origin: "http://localhost:3000"
+}));
 
 // Add express-session middleware
 app.use(session({

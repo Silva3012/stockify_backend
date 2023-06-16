@@ -1,6 +1,5 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-// const mongoose = require('mongoose');
 
 // Middleware function to verify the authenticity of a JWT token
 const verifyToken = (req, res, next) => {
