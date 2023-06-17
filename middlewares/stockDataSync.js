@@ -70,7 +70,7 @@ const updateWatchlistData = async (data) => {
 // Function to fetch stock data for portfolio
 const fetchStockDataForPortfolio = async () => {
   try {
-    // Fetch portfolio symbols from http://localhost:3001/api/stocks/portfolio/
+
     const response = await fetch('http://localhost:3001/api/stocks/portfolio/');
     
     if (!response.ok) {
