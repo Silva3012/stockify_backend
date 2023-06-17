@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const Portfolio = require('../models/portfolio');
 const passport = require('../middlewares/authPassportMiddleware');
 require('dotenv').config();
 
@@ -32,6 +33,19 @@ const registerUser = async (req, res) => {
 
     // Save the user to the database
     await newUser.save();
+
+    // Create an initial portfolio for the user
+    const initialPortfolio = new Portfolio({
+      user: newUser._id,
+      amount: 100000,
+      stocks: [],
+    });
+
+    // Calculate and set the initial total portfolio amount
+    initialPortfolio.totalPortfolioAmount = initialPortfolio.amount;
+
+    // Save the initial portfolio
+    await initialPortfolio.save();
 
     // Generate JWT token
     const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { expiresIn: '24h' });

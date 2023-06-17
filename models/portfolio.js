@@ -8,6 +8,11 @@ const portfolioSchema = new Schema({
     ref: 'User',
     required: true,
   },
+  amount: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
   stocks: [
     {
       ticker: { type: String, required: true },
@@ -21,6 +26,18 @@ const portfolioSchema = new Schema({
     }
   ]
 });
+
+// Define a virtual property to calculate the total portfolio amount
+portfolioSchema.virtual('totalPortfolioAmount').get(function () {
+  let totalValue = this.amount;
+
+  this.stocks.forEach((stock) => {
+    totalValue += stock.totalValue;
+  });
+
+  return totalValue;
+});
+
 
 const Portfolio = mongoose.model('Portfolio', portfolioSchema);
 
