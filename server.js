@@ -7,12 +7,12 @@ const cors = require('cors'); // Import the cors package
 const passport = require('passport') // Importing passport
 const userRoutes = require('./routes/userRoutes');
 const stockRoutes = require('./routes/stockRoutes');
-const {
-  fetchStockDataForWatchlist,
-  updateWatchlistData,
-  fetchStockDataForPortfolio,
-  updatePortfolioData,
-} = require('./middlewares/stockDataSync');
+// const {
+//   fetchStockDataForWatchlist,
+//   updateWatchlistData,
+//   fetchStockDataForPortfolio,
+//   updatePortfolioData,
+// } = require('./middlewares/stockDataSync');
 const cron = require('node-cron');
 
 
@@ -44,30 +44,31 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/users', userRoutes); // User routes
 app.use('/api/stocks', stockRoutes); // Stock routes
 
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB Connected...');
 
-    // Schedule a task to run every 15 minutes
-    cron.schedule('*/15 * * * *', async () => {
-      try {
-        // Fetch stock data for watchlist
-        const watchlistData = await fetchStockDataForWatchlist();
+    // // Schedule a task to run every 15 minutes
+    // cron.schedule('*/15 * * * *', async () => {
+    //   try {
+    //     // Fetch stock data for watchlist
+    //     const watchlistData = await fetchStockDataForWatchlist();
 
-        // Update the watchlist data in the database
-        await updateWatchlistData(watchlistData);
+    //     // Update the watchlist data in the database
+    //     await updateWatchlistData(watchlistData);
 
-        // Fetch stock data for portfolio
-        const portfolioData = await fetchStockDataForPortfolio();
+    //     // Fetch stock data for portfolio
+    //     const portfolioData = await fetchStockDataForPortfolio();
 
-        // Update the portfolio data in the database
-        await updatePortfolioData(portfolioData);
+    //     // Update the portfolio data in the database
+    //     await updatePortfolioData(portfolioData);
 
-        console.log('Data synchronization completed successfully');
-      } catch (error) {
-        console.error('Error occurred during data synchronization:', error);
-      }
-    });
+    //     console.log('Data synchronization completed successfully');
+    //   } catch (error) {
+    //     console.error('Error occurred during data synchronization:', error);
+    //   }
+    // });
 
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);

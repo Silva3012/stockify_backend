@@ -28,8 +28,12 @@ const stockSearchMiddleware = async (req, res, next) => {
     const response = await fetch(`https://api.stockdata.org/v1/data/quote?${query}`, requestOptions);
     if (response.ok) {
       const result = await response.json();
-      req.stockResults = result; // Store the stock data in the request object
-      next(); // Call the next middleware or route handler
+      const suggestions = result.data.map((stock) => ({
+        symbol: stock.ticker,
+        companyName: stock.name,
+      }));
+      req.stockResults = result.data;
+      res.json({ suggestions, searchResults: result.data});
     } else {
       throw new Error('API request failed');
     }
