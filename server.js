@@ -10,6 +10,7 @@ const stockRoutes = require('./routes/stockRoutes');
 const adminUser = require('./routes/adminUserRoutes');
 
 
+
 let PORT = 3001 || process.env.PORT 
 
 const app = express() // Instance of express
@@ -37,17 +38,16 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/users', userRoutes); // User routes
 app.use('/api/stocks', stockRoutes); // Stock routes
-app.use('/api/admin', adminUser) // Admin user route
+app.use('/api/admin', adminUser) // Admin user
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB Connected...');
+
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
   })
   .catch((err) => console.log(err));
-
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
 
 module.exports = app;
