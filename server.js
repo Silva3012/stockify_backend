@@ -11,7 +11,7 @@ const adminUser = require('./routes/adminUserRoutes');
 
 
 
-let PORT = 3001 || process.env.PORT 
+let PORT = 3000 || process.env.PORT 
 
 const app = express() // Instance of express
 
