@@ -24,40 +24,40 @@ passport.deserializeUser((user, done) => {
 });
 
 // // Facebook strategy for authentication
-// passport.use(
-//   new FacebookStrategy(
-//     {
-//       clientID: process.env.FACEBOOK_APP_ID,
-//       clientSecret: process.env.FACEBOOK_APP_SECRET,
-//       callbackURL: 'http://localhost:3001/api/users/auth/facebook/stockify',
-//       profileFields: ['id', 'displayName', 'email'],
-//     },
-//     async (accessToken, refreshToken, profile, done) => {
-//       try {
-//         const facebookId = profile.id;
-//         let user = await User.findOrCreate(
-//           { facebookId }, // Search for existing user with the Facebook ID
-//           {
-//             email: profile.emails[0]?.value,
-//             name: profile.displayName,
-//             facebookId, // Store the Facebook ID in the user document
-//           }
-//         );
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL: 'http://localhost:3001/api/users/auth/facebook/stockify',
+      profileFields: ['id', 'displayName', 'email'],
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        const facebookId = profile.id;
+        let user = await User.findOrCreate(
+          { facebookId }, // Search for existing user with the Facebook ID
+          {
+            email: profile.emails[0]?.value,
+            name: profile.displayName,
+            facebookId, // Store the Facebook ID in the user document
+          }
+        );
 
-//         // Generate the JWT token
-//         const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        // Generate the JWT token
+        const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-//         // Console log the token
-//         console.log('Facebook token:', token);
+        // Console log the token
+        console.log('Facebook token:', token);
 
-//         // Pass the token to the callback
-//         return done(null, { user, token });
-//       } catch (error) {
-//         return done(error);
-//       }
-//     }
-//   )
-// );
+        // Pass the token to the callback
+        return done(null, { user, token });
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
+);
 
 // Google strategy for authentication
 passport.use(

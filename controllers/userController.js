@@ -23,7 +23,6 @@ const registerUser = async (req, res) => {
       username: email, // Use email as the username
       name,
       email,
-      password,
     });
 
     // Hash the password
@@ -69,6 +68,11 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Check if the user is disabled
+    if (user.disabled) {
+      return res.status(403).json({ message: 'User disabled' });
     }
 
     // Generate JWT token

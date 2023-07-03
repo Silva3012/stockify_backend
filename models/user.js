@@ -6,8 +6,10 @@ const { Schema } = mongoose; // Destructuring to extract the schema object
 const userSchema = new Schema({
   name: { type: String },  
   email: { type: String, required: true, unique: true },
+  password: { type: String, required: true, unqiue: true},
   googleId: { type: String },
   facebookId: { type: String },
+  disabled: { type: Boolean, default: false },
 });
 
 // // Apply findOrCreate
