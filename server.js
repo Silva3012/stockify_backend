@@ -16,9 +16,7 @@ let PORT = 3001 || process.env.PORT
 const app = express() // Instance of express
 
 // Enable CORS for all routes
-app.use(cors({
-  origin: "stockify-frontend-dyqgznd0q-silva3012.vercel.app",
-}));
+app.use(cors());
 
 // Add express-session middleware
 app.use(session({
