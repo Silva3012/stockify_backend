@@ -17,7 +17,7 @@ const app = express() // Instance of express
 
 // Enable CORS for all routes
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: "https://stockify-frontend-n9z8rs7p7-silva3012.vercel.app",
 }));
 
 // Add express-session middleware
