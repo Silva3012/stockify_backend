@@ -1,7 +1,7 @@
 require('dotenv').config();
 const passport = require('passport');
-const FacebookStrategy = require('passport-facebook').Strategy;
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+// const FacebookStrategy = require('passport-facebook').Strategy;
+// const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
 const User = require('../models/user');
@@ -22,7 +22,7 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
-
+/*
 // // Facebook strategy for authentication
 passport.use(
   new FacebookStrategy(
@@ -94,5 +94,5 @@ passport.use(
     }
   )
 );
-
+*/
 module.exports = passport;
